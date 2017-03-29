@@ -74,6 +74,11 @@ public class SqlSessionFactoryBuilder {
 
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
+      /**
+       * 通过XMLConfigBuilder工具类对配置文件解析成Configuration对象，
+       * 再调用public SqlSessionFactory build(Configuration config)构建出SqlSessionFactory
+       * @author fangxin
+       */
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
       return build(parser.parse());
     } catch (Exception e) {
@@ -89,6 +94,10 @@ public class SqlSessionFactoryBuilder {
   }
     
   public SqlSessionFactory build(Configuration config) {
+    /**
+     * 返回的是DefaultSqlSessionFactory实例
+     * 其实SqlSessionFactory有两个实现类，另一个是SqlSessionManager
+     */
     return new DefaultSqlSessionFactory(config);
   }
 

@@ -26,15 +26,28 @@ public interface SqlSessionFactory {
 
   SqlSession openSession();
 
+  /**
+   * 设置事务是否自动提交
+   */
   SqlSession openSession(boolean autoCommit);
   SqlSession openSession(Connection connection);
+
+  /**
+   * 隔离级别
+   */
   SqlSession openSession(TransactionIsolationLevel level);
 
+  /**
+   * 执行器类型
+   */
   SqlSession openSession(ExecutorType execType);
   SqlSession openSession(ExecutorType execType, boolean autoCommit);
   SqlSession openSession(ExecutorType execType, TransactionIsolationLevel level);
   SqlSession openSession(ExecutorType execType, Connection connection);
 
+  /**
+   * 该方法说明：可以通过SqlSessionFactory获取Configuration对象
+   */
   Configuration getConfiguration();
 
 }

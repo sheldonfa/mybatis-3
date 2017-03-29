@@ -36,6 +36,13 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
+  /**
+   * Configuration存在于Mybatis的整个生命周期，有且仅有一个实例。
+   * final修饰意味着它是 不可变 对象
+   *
+   * 由此意味着：多个SqlSessionFactory实例是没有意义的，因为它们都是通过一个configuration来构建SqlSession的
+   *
+   */
   private final Configuration configuration;
 
   public DefaultSqlSessionFactory(Configuration configuration) {
@@ -87,6 +94,9 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     return configuration;
   }
 
+  /**
+   * 从数据源中获取SqlSession
+   */
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
     Transaction tx = null;
     try {
@@ -94,6 +104,9 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
       final Executor executor = configuration.newExecutor(tx, execType);
+      /**
+       * DefaultSqlSession是SqlSession的实现类，SqlSession的另一个实现类是SqlSessionManager
+       */
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
       closeTransaction(tx); // may have fetched a connection so lets call close()
@@ -103,6 +116,9 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     }
   }
 
+  /**
+   * 从Connection中获取SqlSession
+   */
   private SqlSession openSessionFromConnection(ExecutorType execType, Connection connection) {
     try {
       boolean autoCommit;
